@@ -1,0 +1,26 @@
+{
+  "extends": "react-app",
+  "rules": {
+    "comma-dangle": [
+      2,
+      "always-multiline"
+    ],
+    "semi": [
+      2,
+      "never"
+    ],
+    "no-unexpected-multiline": 2,
+    "jsx-a11y/href-no-hash": "off",
+    "jsx-a11y/anchor-is-valid": [
+      "warn",
+      {
+        "aspects": [
+          "invalidHref"
+        ]
+      }
+    ],
+    "no-unused-vars": 1,
+    "react/prop-types": 2,
+    "eol-last": 2
+  }
+}
