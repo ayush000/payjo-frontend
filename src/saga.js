@@ -8,6 +8,12 @@ import {
   REGISTER,
   registerSuccess,
   registerFailure,
+  CREATE_PRODUCT,
+  createProductSuccess,
+  createProductFailure,
+  GET_PRODUCTS,
+  getProductsSuccess,
+  getProductsFailure,
 } from './action'
 
 export function* login(action) {
@@ -23,7 +29,6 @@ export function* login(action) {
 
 export function* register(action) {
   try {
-    console.log(action.payload)
     const response = yield call(Api.register, action.payload)
     const { data } = response
     window.localStorage.setItem(tokenKey, data.token)
@@ -33,7 +38,29 @@ export function* register(action) {
   }
 }
 
+export function* createProduct(action) {
+  try {
+    const response = yield call(Api.createProduct, action.payload)
+    const { data } = response
+    yield put(createProductSuccess(data))
+  } catch (err) {
+    yield put(createProductFailure(new Error(err.response.data)))
+  }
+}
+
+export function* getProducts(action) {
+  try {
+    const response = yield call(Api.getProducts)
+    const { data } = response
+    yield put(getProductsSuccess(data))
+  } catch (err) {
+    yield put(getProductsFailure(new Error(err.response.data)))
+  }
+}
+
 export default function* root() {
   yield takeEvery(LOGIN, login)
   yield takeEvery(REGISTER, register)
+  yield takeEvery(CREATE_PRODUCT, createProduct)
+  yield takeEvery(GET_PRODUCTS, getProducts)
 }

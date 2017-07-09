@@ -7,6 +7,7 @@ import { Route } from 'react-router-dom'
 import { tokenKey } from './constants'
 import Login from './component/Login'
 import Register from './component/Register'
+import ProductTable from './component/ProductTable'
 import { setToken } from './action'
 
 const mapDispatchToProps = dispatch => ({
@@ -29,7 +30,7 @@ class Routes extends Component {
   render() {
     return (
       <div style={{ width: '60%', margin: 'auto' }}>
-        <Route path="/" exact component={Login} />
+        <Route path="/" exact component={ProductTable} />
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
       </div>)

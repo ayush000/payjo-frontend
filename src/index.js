@@ -3,6 +3,8 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { AppContainer } from 'react-hot-loader'
+import { LocaleProvider } from 'antd'
+import enUS from 'antd/lib/locale-provider/en_US'
 
 import configureStore, { sagaMiddleware } from './configureStore'
 import saga from './saga'
@@ -16,11 +18,13 @@ sagaMiddleware.run(saga)
 const rootEl = document.getElementById('root')
 const wrapClientApp = AppComponent => (
   <Provider store={store}>
-    <BrowserRouter>
-      <AppContainer>
-        <AppComponent />
-      </AppContainer>
-    </BrowserRouter>
+    <LocaleProvider locale={enUS}>
+      <BrowserRouter>
+        <AppContainer>
+          <AppComponent />
+        </AppContainer>
+      </BrowserRouter>
+    </LocaleProvider>
   </Provider>
 )
 
