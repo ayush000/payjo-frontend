@@ -14,6 +14,12 @@ import {
   GET_PRODUCTS,
   getProductsSuccess,
   getProductsFailure,
+  SAVE_ROW,
+  saveRowSuccess,
+  saveRowFailure,
+  DELETE_ROW,
+  deleteRowSuccess,
+  deleteRowFailure,
 } from './action'
 
 export function* login(action) {
@@ -58,9 +64,32 @@ export function* getProducts(action) {
   }
 }
 
+export function* saveRow(action) {
+  const { productId, product, index } = action.payload
+  try {
+    const response = yield call(Api.updateProduct, productId, { product })
+    const { data } = response
+    yield put(saveRowSuccess({ index, data }))
+  } catch (err) {
+    yield put(saveRowFailure({ index, err: new Error(err.response.data) }))
+  }
+}
+
+export function* deleteRow(action) {
+  const { productId, index } = action.payload
+  try {
+    yield call(Api.deleteProduct, productId)
+    yield put(deleteRowSuccess(index))
+  } catch (err) {
+    yield put(deleteRowFailure({ index, err: new Error(err.response.data) }))
+  }
+}
+
 export default function* root() {
   yield takeEvery(LOGIN, login)
   yield takeEvery(REGISTER, register)
   yield takeEvery(CREATE_PRODUCT, createProduct)
   yield takeEvery(GET_PRODUCTS, getProducts)
+  yield takeEvery(SAVE_ROW, saveRow)
+  yield takeEvery(DELETE_ROW, deleteRow)
 }

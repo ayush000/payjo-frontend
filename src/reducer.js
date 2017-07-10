@@ -14,6 +14,14 @@ import {
   GET_PRODUCTS,
   GET_PRODUCTS_SUCCESS,
   GET_PRODUCTS_FAILURE,
+  EDIT_ROW,
+  EDIT_ROW_CANCEL,
+  SAVE_ROW,
+  SAVE_ROW_SUCCESS,
+  SAVE_ROW_FAILURE,
+  DELETE_ROW,
+  DELETE_ROW_SUCCESS,
+  DELETE_ROW_FAILURE,
 } from './action'
 import initalState from './initialState'
 
@@ -28,9 +36,8 @@ const auth = (state = initalState.auth, action) => {
     case REGISTER_FAILURE:
     case LOGIN_FAILURE:
       return { ...state, inProgress: false, error: action.payload.message }
-    case SET_TOKEN: {
+    case SET_TOKEN:
       return { ...state, token: action.payload }
-    }
     default:
       return state
   }
@@ -42,12 +49,110 @@ const product = (state = initalState.product, action) => {
     case CREATE_PRODUCT:
       return { ...state, inProgress: true }
     case GET_PRODUCTS_SUCCESS:
-      return { ...state, inProgress: false, list: action.payload }
+      return {
+        ...state,
+        inProgress: false,
+        list: action.payload.map(row => ({ ...row, editing: false, key: row._id })),
+      }
     case CREATE_PRODUCT_SUCCESS:
-      return { ...state, inProgress: false, list: [...state.list, action.payload] }
+      return {
+        ...state,
+        inProgress: false,
+        list: [...state.list, { ...action.payload, editing: false, key: action.payload._id }],
+      }
     case CREATE_PRODUCT_FAILURE:
     case GET_PRODUCTS_FAILURE:
       return { ...state, inProgress: false, error: action.payload.message }
+    case EDIT_ROW: {
+      const index = action.payload
+      const rowEditing = state.list[index]
+      const { list } = state
+      return {
+        ...state,
+        list: [
+          ...list.slice(0, index),
+          { ...rowEditing, editing: true },
+          ...list.slice(index + 1),
+        ],
+      }
+    }
+    case EDIT_ROW_CANCEL: {
+      const index = action.payload
+      const rowEditing = state.list[index]
+      const { list } = state
+      return {
+        ...state,
+        list: [
+          ...list.slice(0, index),
+          { ...rowEditing, editing: false },
+          ...list.slice(index + 1),
+        ],
+      }
+    }
+    case SAVE_ROW: {
+      const { index } = action.payload
+      const rowEditing = state.list[index]
+      const { list } = state
+      return {
+        ...state,
+        list: [
+          ...list.slice(0, index),
+          { ...rowEditing, editing: false, inProgress: true },
+          ...list.slice(index + 1),
+        ],
+      }
+    }
+    case SAVE_ROW_SUCCESS: {
+      const { index, data } = action.payload
+      const { list } = state
+      return {
+        ...state,
+        list: [
+          ...list.slice(0, index),
+          { ...data, inProgress: false, key: data._id },
+          ...list.slice(index + 1),
+        ],
+      }
+    }
+    case DELETE_ROW_FAILURE:
+    case SAVE_ROW_FAILURE: {
+      const { index, err } = action.payload
+      const { list } = state
+      const rowEditing = state.list[index]
+      return {
+        ...state,
+        list: [
+          ...list.slice(0, index),
+          { ...rowEditing, inProgress: false },
+          ...list.slice(index + 1),
+        ],
+        errors: [...state.errors, err],
+      }
+    }
+    case DELETE_ROW: {
+      const { index } = action.payload
+      const rowDeleting = state.list[index]
+      const { list } = state
+      return {
+        ...state,
+        list: [
+          ...list.slice(0, index),
+          { ...rowDeleting, inProgress: true },
+          ...list.slice(index + 1),
+        ],
+      }
+    }
+    case DELETE_ROW_SUCCESS: {
+      const index = action.payload
+      const { list } = state
+      return {
+        ...state,
+        list: [
+          ...list.slice(0, index),
+          ...list.slice(index + 1),
+        ],
+      }
+    }
     default:
       return state
   }

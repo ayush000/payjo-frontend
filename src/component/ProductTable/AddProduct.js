@@ -61,6 +61,7 @@ class AddProduct extends Component {
     e.preventDefault()
     try {
       const values = await this.validateFields()
+      values.expiry = values.expiry.format('YYYY-MM-DD')
       await this.props.actions.createProduct({ product: values })
     } catch (err) {
       console.log(err)

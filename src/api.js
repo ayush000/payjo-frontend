@@ -8,3 +8,7 @@ export const createProduct = product =>
   http.post('/products', product)
 export const getProducts = () =>
   http.get('/products')
+export const updateProduct = (id, product) =>
+  http.put(`/products/${id}`, product)
+export const deleteProduct = id =>
+  http.delete(`/products/${id}`)
