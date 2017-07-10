@@ -7,6 +7,8 @@ import Login from './component/Login'
 import Register from './component/Register'
 import ProductTable from './component/ProductTable'
 
+// If token is present, set authorization header in root component,
+// so any component rendered will lead to header being set
 if (window.localStorage.getItem(tokenKey)) {
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem(tokenKey)
 }

@@ -1,3 +1,4 @@
+// Authorization header is globally set if token is present in localStorage
 import http from './http'
 
 export const login = user =>

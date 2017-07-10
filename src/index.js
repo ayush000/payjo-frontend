@@ -1,3 +1,4 @@
+// Entry point
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
@@ -29,7 +30,7 @@ const wrapClientApp = AppComponent => (
 )
 
 render(wrapClientApp(Routes), rootEl)
-// Hot Module Replacement API
+// Hot Module Replacement
 if (module.hot) {
   module.hot.accept('./Routes', () => {
     const NextApp = require('./Routes').default

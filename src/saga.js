@@ -1,3 +1,5 @@
+// Asynchronous actions
+// For every asynchronous action it runs it through its generator function
 import { takeEvery, call, put } from 'redux-saga/effects'
 import { tokenKey } from './constants'
 import * as Api from './api'
@@ -24,11 +26,14 @@ import {
 
 export function* login(action) {
   try {
+    // Fetch API response
     const response = yield call(Api.login, action.payload)
     const { data } = response
     window.localStorage.setItem(tokenKey, data.token)
+    // Dispatch success action
     yield put(loginSuccess(data))
   } catch (err) {
+    // Dispatch failure action
     yield put(loginFailure(new Error(err.response.data)))
   }
 }
@@ -85,6 +90,7 @@ export function* deleteRow(action) {
   }
 }
 
+// Take every action and run a generator function for it
 export default function* root() {
   yield takeEvery(LOGIN, login)
   yield takeEvery(REGISTER, register)

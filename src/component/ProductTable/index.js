@@ -33,14 +33,15 @@ class ProductTable extends Component {
   }
 
   componentDidUpdate() {
+    // If redirect is set in state, this means user is not authorized.
+    // Hence token is unset and user is redirected to /login
     if (this.props.redirect) {
-      window.localStorage.setItem(tokenKey, '')
-      this.props.history.push('/login')
+      this.logout()
     }
   }
 
   edit = (index, row) => {
-    console.log(index)
+    // Adds row in state
     this.setState({ rowsEditing: { ...this.state.rowsEditing, [index]: row } })
     this.props.actions.editRow(index)
   }
@@ -52,7 +53,6 @@ class ProductTable extends Component {
 
   editDone = (index) => {
     const product = this.state.rowsEditing[index]
-    console.log(product)
     this.props.actions.saveRow({
       index,
       productId: product._id,
@@ -69,6 +69,12 @@ class ProductTable extends Component {
     this.props.actions.deleteRow({ productId, index })
   }
 
+  logout = () => {
+    window.localStorage.setItem(tokenKey, '')
+    this.props.history.push('/login')
+  }
+  
+  // Event listeners for controlled components
   handleNameChange = (name, index) => {
     const selectedRow = this.state.rowsEditing[index]
     this.setState({
@@ -91,8 +97,6 @@ class ProductTable extends Component {
   }
 
   handleQuantityChange = (quantity, index) => {
-    console.log(quantity)
-    console.log(!/^\d+$/g.test(quantity))
     if (/^\d+$/g.test(quantity)) {
       const selectedRow = this.state.rowsEditing[index]
       this.setState({
@@ -105,7 +109,6 @@ class ProductTable extends Component {
   }
 
   handleExpiryChange = (expiry, index) => {
-    console.log(expiry)
     const selectedRow = this.state.rowsEditing[index]
     this.setState({
       rowsEditing: {
@@ -115,15 +118,9 @@ class ProductTable extends Component {
     })
   }
 
-  logout = () => {
-    console.log('Logging out')
-    window.localStorage.setItem(tokenKey, '')
-    this.props.history.push('/login')
-  }
-
   render() {
-    console.log(this.props.list)
-
+    // If editing is set for a row, the input component will be rendered
+    // Otherwise display component will be rendered
     const columns = [{
       title: 'Name',
       dataIndex: 'name',

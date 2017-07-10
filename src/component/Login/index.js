@@ -38,6 +38,8 @@ class Login extends Component {
   }
 
   componentDidUpdate() {
+    // For every update in props, it checks whether localStorage has token
+    // And redirects to /
     if (window.localStorage.getItem(tokenKey)) {
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem(tokenKey)
       this.props.history.push('/')
@@ -52,7 +54,7 @@ class Login extends Component {
       })
     })
   }
-
+// Dispatch login action after fields are validated
   handleSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -80,6 +82,7 @@ class Login extends Component {
         <h1>
           Login
         </h1>
+        {/*if error is present in props, create a div with error message*/}
         {this.props.error ?
           <div style={{ color: 'red' }}>{this.props.error}</div>
           : null}
