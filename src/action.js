@@ -53,7 +53,7 @@ export const {
   getProducts,
   getProductsSuccess,
   getProductsFailure,
-} = createActions(GET_PRODUCTS, GET_PRODUCTS_SUCCESS, GET_PRODUCTS_SUCCESS)
+} = createActions(GET_PRODUCTS, GET_PRODUCTS_SUCCESS, GET_PRODUCTS_FAILURE)
 
 export const {
   editRow,

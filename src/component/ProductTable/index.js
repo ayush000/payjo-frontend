@@ -2,17 +2,19 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Table, Input, InputNumber, DatePicker } from 'antd'
+import { Table, Input, InputNumber, DatePicker, Button } from 'antd'
 import moment from 'moment'
 
 import { getProducts, editRow, editRowCancel, saveRow, deleteRow } from '../../action'
 import AddProduct from './AddProduct'
+import { tokenKey } from '../../constants'
 
-const mapStateToProps = state => ({ ...state.product })
+const mapStateToProps = state => ({ ...state.product, redirect: state.redirect })
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators({ getProducts, editRow, editRowCancel, saveRow, deleteRow }, dispatch),
 })
+
 class ProductTable extends Component {
   state = {
     modalVisible: false,
@@ -22,10 +24,19 @@ class ProductTable extends Component {
   static propTypes = {
     list: PropTypes.arrayOf(PropTypes.object).isRequired,
     actions: PropTypes.objectOf(PropTypes.func).isRequired,
+    redirect: PropTypes.bool.isRequired,
+    history: PropTypes.object,
   }
 
   componentDidMount() {
     this.props.actions.getProducts()
+  }
+
+  componentDidUpdate() {
+    if (this.props.redirect) {
+      window.localStorage.setItem(tokenKey, '')
+      this.props.history.push('/login')
+    }
   }
 
   edit = (index, row) => {
@@ -102,6 +113,12 @@ class ProductTable extends Component {
         [index]: { ...selectedRow, expiry },
       },
     })
+  }
+
+  logout = () => {
+    console.log('Logging out')
+    window.localStorage.setItem(tokenKey, '')
+    this.props.history.push('/login')
   }
 
   render() {
@@ -181,7 +198,10 @@ class ProductTable extends Component {
           Products
         </h1>
         <Table bordered columns={columns} dataSource={this.props.list} />
-        <AddProduct />
+        <div style={{ display: 'flex' }}>
+          <AddProduct />
+          <Button style={{ marginLeft: '10px' }} onClick={this.logout}>Logout</Button>
+        </div>
       </div>)
   }
 }

@@ -4,8 +4,10 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Form, Icon, Input, Button } from 'antd'
+import axios from 'axios'
 
 import { login } from '../../action'
+import { tokenKey } from '../../constants'
 
 const hasErrors = (fieldsError) =>
   Object.keys(fieldsError).some(field => fieldsError[field])
@@ -22,13 +24,13 @@ class Login extends Component {
     form: PropTypes.object,
     actions: PropTypes.objectOf(PropTypes.func).isRequired,
     inProgress: PropTypes.bool.isRequired,
-    error: PropTypes.object,
+    error: PropTypes.string,
     token: PropTypes.string.isRequired,
     history: PropTypes.object,
   }
 
   async componentDidMount() {
-    // To disabled submit button at the beginning.
+    // To disable submit button at the beginning.
     try {
       await this.validateFields()
     } catch (error) {
@@ -36,7 +38,8 @@ class Login extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.token) {
+    if (window.localStorage.getItem(tokenKey)) {
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem(tokenKey)
       this.props.history.push('/')
     }
   }
@@ -54,7 +57,7 @@ class Login extends Component {
     e.preventDefault()
     try {
       const values = await this.validateFields()
-      await this.props.actions.register({ user: values })
+      await this.props.actions.login({ user: values })
     } catch (err) {
       console.log(err)
       alert(JSON.stringify(err))

@@ -1,32 +1,17 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
+import axios from 'axios'
 
 import { tokenKey } from './constants'
 import Login from './component/Login'
 import Register from './component/Register'
 import ProductTable from './component/ProductTable'
-import { setToken } from './action'
 
-const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators({ setToken }, dispatch),
-})
-
+if (window.localStorage.getItem(tokenKey)) {
+  axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem(tokenKey)
+}
 
 class Routes extends Component {
-  static propTypes = {
-    actions: PropTypes.objectOf(PropTypes.func).isRequired,
-  }
-
-  componentWillMount() {
-    const token = window.localStorage.getItem(tokenKey)
-    if (token) {
-      this.props.actions.setToken(token)
-    }
-  }
-
   render() {
     return (
       <div style={{ width: '60%', margin: 'auto' }}>
@@ -36,4 +21,4 @@ class Routes extends Component {
       </div>)
   }
 }
-export default connect(null, mapDispatchToProps)(Routes)
+export default Routes

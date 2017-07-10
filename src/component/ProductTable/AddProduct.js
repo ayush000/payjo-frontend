@@ -59,6 +59,7 @@ class AddProduct extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault()
+    this.setState({ showModal: false })
     try {
       const values = await this.validateFields()
       values.expiry = values.expiry.format('YYYY-MM-DD')

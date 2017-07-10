@@ -3,7 +3,9 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Form, Icon, Input, Button } from 'antd'
+
 import { register } from '../../action'
+import { tokenKey } from '../../constants'
 
 const hasErrors = (fieldsError) =>
   Object.keys(fieldsError).some(field => fieldsError[field])
@@ -33,10 +35,11 @@ class Register extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.token) {
+    if (window.localStorage.getItem(tokenKey)) {
       this.props.history.push('/')
     }
   }
+
 
   validateFields = () => {
     return new Promise((resolve, reject) => {

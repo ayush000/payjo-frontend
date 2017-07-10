@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux'
-// export default combineReducers()
 import {
   REGISTER,
   REGISTER_SUCCESS,
@@ -7,7 +6,6 @@ import {
   LOGIN,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  SET_TOKEN,
   CREATE_PRODUCT,
   CREATE_PRODUCT_SUCCESS,
   CREATE_PRODUCT_FAILURE,
@@ -36,8 +34,6 @@ const auth = (state = initalState.auth, action) => {
     case REGISTER_FAILURE:
     case LOGIN_FAILURE:
       return { ...state, inProgress: false, error: action.payload.message }
-    case SET_TOKEN:
-      return { ...state, token: action.payload }
     default:
       return state
   }
@@ -158,7 +154,28 @@ const product = (state = initalState.product, action) => {
   }
 }
 
+const redirect = (state = initalState.redirect, action) => {
+  switch (action.type) {
+    case CREATE_PRODUCT_FAILURE:
+    case GET_PRODUCTS_FAILURE:
+    case SAVE_ROW_FAILURE:
+    case DELETE_ROW_FAILURE: {
+      if (action.payload.message === 'Authentication Error' ||
+        (action.payload.err && action.payload.err.message === 'Authentication Error')) {
+        return true
+      }
+      return state
+    }
+    case LOGIN_SUCCESS:
+    case REGISTER_SUCCESS:
+      return false
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
   auth,
   product,
+  redirect,
 })
